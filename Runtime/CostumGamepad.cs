@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -16,21 +17,22 @@ public struct ArcadeGamepadState : IInputStateTypeInfo
     // device to give a base level of safety checks on memory operations.
     public FourCC format => new FourCC('H', 'I', 'D');
 
-    [InputControl(name = "BlueBottom", layout = "Button", bit = 0, offset = 3)]
-    [InputControl(name = "BlueTop", layout = "Button", bit = 1, offset = 3)]
-    [InputControl(name = "GreenBottom", layout = "Button", bit = 2, offset = 3)]
-    [InputControl(name = "GreenTop", layout = "Button", bit = 3, offset = 3)]
-    [InputControl(name = "YellowBottom", layout = "Button", bit = 4, offset = 3)]
-    [InputControl(name = "YellowTop", layout = "Button", bit = 5, offset = 3)]
+    [InputControl(name = "BlueBottom", layout = "Button", bit = 0, offset = 1)]
+    [InputControl(name = "BlueTop", layout = "Button", bit = 1, offset = 1)]
+    [InputControl(name = "GreenBottom", layout = "Button", bit = 2, offset = 1)]
+    [InputControl(name = "GreenTop", layout = "Button", bit = 3, offset = 1)]
+    [InputControl(name = "YellowBottom", layout = "Button", bit = 4, offset = 1)]
+    [InputControl(name = "YellowTop", layout = "Button", bit = 5, offset = 1)]
     public int Buttons;
 
 
-    [InputControl(name = "Stick", layout = "Stick", offset = 1, sizeInBits = 16)]
-    [InputControl(name = "Stick/x", layout = "Axis", offset = 0, sizeInBits = 8, format = "BIT",
-          parameters = "normalize,normalizeMin=0,normalizeMax=1,normalizeZero=0.5",processors = "AxisDeadzone(min=0.2,max=0.8)")]
-    [InputControl(name = "Stick/y", layout = "Axis", offset = 1, sizeInBits = 8, format = "BIT",
-          parameters = "normalize,normalizeMin=0,normalizeMax=1,normalizeZero=0.5", processors = "AxisDeadzone(min=0.2,max=0.8),invert")]
-    public short Stick;
+    const string processors = "CostumAxis";
+
+    [InputControl(layout = "Axis", offset = 4, sizeInBits = 16, processors = processors)]
+    public short AxisX;
+
+    [InputControl(layout = "Axis", offset = 2, sizeInBits = 16, processors = processors)]
+    public short AxisY;
 
 }
 
@@ -57,7 +59,10 @@ public class ArcadeGamepad : InputDevice
     public ButtonControl BlueBottom { get; private set; }
 
     [InputControl]
-    public Vector2Control Stick { get; private set; }
+    public AxisControl AxisX { get; private set; }
+
+    [InputControl]
+    public AxisControl AxisY { get; private set; }
 
     // Register the device.
     static ArcadeGamepad()
@@ -70,17 +75,13 @@ public class ArcadeGamepad : InputDevice
         // the Unity runtime when a device is connected. You can add them either
         // using InputSystem.RegisterLayoutMatcher() or by directly specifying a
         // matcher when registering the layout.
-        InputSystem.RegisterLayout<ArcadeGamepad>(matches: new InputDeviceMatcher()
-        .WithInterface("HID")
-        .WithCapability("vendorId", 0x16C0));
-        //.WithCapability("productId", 0x5E1));
-        return;
 
+        InputSystem.RegisterProcessor<CostumAxisProcessor>("CostumAxis");
+        //return;
         InputSystem.RegisterLayout<ArcadeGamepad>(matches: new InputDeviceMatcher()
         .WithInterface("HID")
-        .WithManufacturer("xin-mo.com"));
+        .WithCapability("vendorId", 0x2341));
     }
-
 
     // This is only to trigger the static class constructor to automatically run
     // in the player.
@@ -95,7 +96,43 @@ public class ArcadeGamepad : InputDevice
         YellowBottom = GetChildControl<ButtonControl>("YellowBottom");
         BlueTop = GetChildControl<ButtonControl>("BlueTop");
         BlueBottom = GetChildControl<ButtonControl>("BlueBottom");
-        Stick = GetChildControl<StickControl>("Stick");
+        AxisX = GetChildControl<AxisControl>("AxisX");
+        AxisX = GetChildControl<AxisControl>("AxisY");
         base.FinishSetup();
     }
+
+
+
 }
+
+#if UNITY_EDITOR
+[InitializeOnLoad]
+#endif
+public class CostumAxisProcessor : InputProcessor<float>
+{
+#if UNITY_EDITOR
+    static CostumAxisProcessor()
+    {
+        Initialize();
+    }
+#endif
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void Initialize()
+    {
+
+    }
+
+    public override float Process(float value, InputControl control)
+    {
+
+        bool isZero = Mathf.RoundToInt(value) == -1;
+        Debug.Log($"{Mathf.Round(value)}, {value > 0}");
+
+        if (isZero)
+            return 0;
+        return value > 0 ? 1 : -1;
+    }
+}
+
+//...
