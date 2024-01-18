@@ -28,11 +28,14 @@ public struct ArcadeGamepadState : IInputStateTypeInfo
 
     const string processors = "CostumAxis";
 
-    [InputControl(layout = "Axis", offset = 4, sizeInBits = 16, processors = processors)]
-    public short AxisX;
 
-    [InputControl(layout = "Axis", offset = 2, sizeInBits = 16, processors = processors)]
-    public short AxisY;
+
+
+    [InputControl(name ="stick",layout ="Vector2",format ="VC25", sizeInBits = 32,offset = 2, processors = "CostumVector,InvertVector2(invertX=true,invertY=false)")]
+    [InputControl(name = "stick/x", format ="SHRT", processors = "CostumAxis,Invert")]
+    public short StickX;
+    [InputControl(name = "stick/y", format = "SHRT", offset = 2, processors = processors)]
+    public short StickY;
 
 }
 
@@ -59,10 +62,7 @@ public class ArcadeGamepad : InputDevice
     public ButtonControl BlueBottom { get; private set; }
 
     [InputControl]
-    public AxisControl AxisX { get; private set; }
-
-    [InputControl]
-    public AxisControl AxisY { get; private set; }
+    public Vector2Control Stick { get; private set; }
 
     // Register the device.
     static ArcadeGamepad()
@@ -77,6 +77,7 @@ public class ArcadeGamepad : InputDevice
         // matcher when registering the layout.
 
         InputSystem.RegisterProcessor<CostumAxisProcessor>("CostumAxis");
+        InputSystem.RegisterProcessor<CostumVectorProcessor>("CostumVector");
         //return;
         InputSystem.RegisterLayout<ArcadeGamepad>(matches: new InputDeviceMatcher()
         .WithInterface("HID")
@@ -96,8 +97,7 @@ public class ArcadeGamepad : InputDevice
         YellowBottom = GetChildControl<ButtonControl>("YellowBottom");
         BlueTop = GetChildControl<ButtonControl>("BlueTop");
         BlueBottom = GetChildControl<ButtonControl>("BlueBottom");
-        AxisX = GetChildControl<AxisControl>("AxisX");
-        AxisX = GetChildControl<AxisControl>("AxisY");
+        Stick = GetChildControl<Vector2Control>("stick");
         base.FinishSetup();
     }
 
@@ -124,6 +124,9 @@ public class CostumAxisProcessor : InputProcessor<float>
     }
 
     public override float Process(float value, InputControl control)
+        => Processor(value);
+
+    public static float Processor(float value)
     {
 
         bool isZero = Mathf.RoundToInt(value) == -1;
@@ -132,6 +135,32 @@ public class CostumAxisProcessor : InputProcessor<float>
         if (isZero)
             return 0;
         return value > 0 ? 1 : -1;
+    }
+}
+
+
+#if UNITY_EDITOR
+[InitializeOnLoad]
+#endif
+public class CostumVectorProcessor : InputProcessor<Vector2>
+{
+#if UNITY_EDITOR
+    static CostumVectorProcessor()
+    {
+        Initialize();
+    }
+#endif
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void Initialize()
+    {
+
+    }
+
+    public override Vector2 Process(Vector2 value, InputControl control)
+    {
+
+        return new Vector2(CostumAxisProcessor.Processor(value.x), CostumAxisProcessor.Processor(value.y));
     }
 }
 
