@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <uie:Toolbar>
+        <ui:Label text="Manifest editor&#10;" style="-unity-font-style: bold; -unity-text-align: upper-center;" />
+        <uie:ToolbarButton text="save" display-tooltip-when-elided="true" />
+    </uie:Toolbar>
+    <ui:TextField picking-mode="Ignore" label="game name" text="filler text" name="Name" />
+    <ui:TextField picking-mode="Ignore" label="Description" name="Description" multiline="true" />
+    <uie:ColorField label="Background color" value="RGBA(0.000, 1.000, 1.000, 1.000)" name="BackgroundColor" show-alpha="false" />
+    <ui:DropdownField label="Dropdown" index="0" choices="singleplayer only,multiplayer only, both" name="PlayersNeeded" />
+</ui:UXML>

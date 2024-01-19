@@ -23,6 +23,7 @@ public struct ArcadeGamepadState : IInputStateTypeInfo
     [InputControl(name = "GreenTop", layout = "Button", bit = 3, offset = 1)]
     [InputControl(name = "YellowBottom", layout = "Button", bit = 4, offset = 1)]
     [InputControl(name = "YellowTop", layout = "Button", bit = 5, offset = 1)]
+    [InputControl(name = "IsRightPlayer", layout = "Button", bit = 6, offset = 1)]
     public int Buttons;
 
 
@@ -33,6 +34,7 @@ public struct ArcadeGamepadState : IInputStateTypeInfo
 
     [InputControl(name ="stick",layout ="Vector2",format ="VC25", sizeInBits = 32,offset = 2, processors = "CostumVector,InvertVector2(invertX=true,invertY=false)")]
     [InputControl(name = "stick/x", format ="SHRT", processors = "CostumAxis,Invert")]
+
     public short StickX;
     [InputControl(name = "stick/y", format = "SHRT", offset = 2, processors = processors)]
     public short StickY;
@@ -60,6 +62,10 @@ public class ArcadeGamepad : InputDevice
     public ButtonControl BlueTop { get; private set; }
     [InputControl]
     public ButtonControl BlueBottom { get; private set; }
+
+    [InputControl]
+    public ButtonControl IsRightPlayer { get; private set; }
+
 
     [InputControl]
     public Vector2Control Stick { get; private set; }
@@ -97,6 +103,7 @@ public class ArcadeGamepad : InputDevice
         YellowBottom = GetChildControl<ButtonControl>("YellowBottom");
         BlueTop = GetChildControl<ButtonControl>("BlueTop");
         BlueBottom = GetChildControl<ButtonControl>("BlueBottom");
+        IsRightPlayer = GetChildControl<ButtonControl>("IsRightPlayer");
         Stick = GetChildControl<Vector2Control>("stick");
         base.FinishSetup();
     }
@@ -128,10 +135,7 @@ public class CostumAxisProcessor : InputProcessor<float>
 
     public static float Processor(float value)
     {
-
-        bool isZero = Mathf.RoundToInt(value) == -1;
-        Debug.Log($"{Mathf.Round(value)}, {value > 0}");
-
+        bool isZero = Mathf.RoundToInt(value) == 1;
         if (isZero)
             return 0;
         return value > 0 ? 1 : -1;
