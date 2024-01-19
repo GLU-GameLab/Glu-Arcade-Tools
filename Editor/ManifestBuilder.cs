@@ -9,7 +9,7 @@ using System.IO;
 
 public class ManifestBuilder : IPreprocessBuildWithReport
 {
-    public int callbackOrder => throw new System.NotImplementedException();
+    public int callbackOrder => 1;
 
     [PostProcessBuild(1)]
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)

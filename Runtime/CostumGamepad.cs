@@ -66,6 +66,7 @@ public class ArcadeGamepad : Joystick
     [InputControl]
     public ButtonControl IsRightPlayer { get; private set; }
 
+    private static bool Initalized;
 
     // Register the device.
     static ArcadeGamepad()
@@ -79,7 +80,19 @@ public class ArcadeGamepad : Joystick
         // using InputSystem.RegisterLayoutMatcher() or by directly specifying a
         // matcher when registering the layout.
 
+        InitializeInPlayer();
+    }
 
+    // This is only to trigger the static class constructor to automatically run
+    // in the player.
+    [RuntimeInitializeOnLoadMethod]
+    private static void InitializeInPlayer()
+    {
+
+        if (Initalized)
+            return;
+
+        Initalized = true;
         Debug.Log("adding Arcade gamepad to the devices");
 
         InputSystem.RegisterProcessor<CostumAxisProcessor>("CostumAxis");
@@ -91,11 +104,6 @@ public class ArcadeGamepad : Joystick
 
         Debug.Log("added arcade gamepad");
     }
-
-    // This is only to trigger the static class constructor to automatically run
-    // in the player.
-    [RuntimeInitializeOnLoadMethod]
-    private static void InitializeInPlayer() { }
 
     protected override void FinishSetup()
     {
