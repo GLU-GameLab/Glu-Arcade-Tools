@@ -1,6 +1,9 @@
-﻿namespace ArcadeLauncher.Models
+﻿using UnityEngine;
+
+namespace ArcadeLauncher.Models
 {
-    public class GameManifest
+    [CreateAssetMenu(fileName = "game manifest", menuName ="Arcade/create manifest")]
+    public class GameManifest : ScriptableObject
     {
         public string Name;
         public string Description;
@@ -9,6 +12,6 @@
         public string BackgroundColor;
 
         public int PlayersNeeded;
-        public int ManifestVersion= 1;
+        [HideInInspector]public int ManifestVersion= 1;
     }
 }

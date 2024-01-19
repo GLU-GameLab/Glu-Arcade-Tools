@@ -79,12 +79,17 @@ public class ArcadeGamepad : Joystick
         // using InputSystem.RegisterLayoutMatcher() or by directly specifying a
         // matcher when registering the layout.
 
+
+        Debug.Log("adding Arcade gamepad to the devices");
+
         InputSystem.RegisterProcessor<CostumAxisProcessor>("CostumAxis");
         InputSystem.RegisterProcessor<CostumVectorProcessor>("CostumVector");
         //return;
         InputSystem.RegisterLayout<ArcadeGamepad>(matches: new InputDeviceMatcher()
         .WithInterface("HID")
         .WithCapability("vendorId", 0x2341));
+
+        Debug.Log("added arcade gamepad");
     }
 
     // This is only to trigger the static class constructor to automatically run

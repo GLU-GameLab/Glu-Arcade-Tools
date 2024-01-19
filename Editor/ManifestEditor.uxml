@@ -2,6 +2,8 @@
     <uie:Toolbar>
         <ui:Label text="Manifest editor&#10;" style="-unity-font-style: bold; -unity-text-align: upper-center;" />
         <uie:ToolbarButton text="save" display-tooltip-when-elided="true" />
+        <uie:ToolbarSpacer style="flex-grow: 3;" />
+        <uie:ToolbarToggle focusable="false" label="Auto save" style="flex-shrink: 0;" />
     </uie:Toolbar>
     <ui:TextField picking-mode="Ignore" label="game name" text="filler text" name="Name" />
     <ui:TextField picking-mode="Ignore" label="Description" name="Description" multiline="true" />
