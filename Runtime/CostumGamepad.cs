@@ -32,7 +32,7 @@ public struct ArcadeGamepadState : IInputStateTypeInfo
 
 
 
-    [InputControl(name ="stick",layout ="Vector2",format ="VC25", sizeInBits = 32,offset = 2, processors = "CostumVector,InvertVector2(invertX=true,invertY=false)")]
+    [InputControl(name ="stick",layout ="stick",format ="VC25", sizeInBits = 32,offset = 2, processors = "CostumVector,InvertVector2(invertX=true,invertY=false)")]
     [InputControl(name = "stick/x", format ="SHRT", processors = "CostumAxis,Invert")]
 
     public short StickX;
@@ -46,7 +46,7 @@ public struct ArcadeGamepadState : IInputStateTypeInfo
 [UnityEditor.InitializeOnLoad]
 #endif
 [InputControlLayout(displayName = "arcade Gamepad ", stateType = typeof(ArcadeGamepadState))]
-public class ArcadeGamepad : InputDevice
+public class ArcadeGamepad : Joystick
 {
     [InputControl]
     public ButtonControl GreenTop { get; private set; }
@@ -66,9 +66,6 @@ public class ArcadeGamepad : InputDevice
     [InputControl]
     public ButtonControl IsRightPlayer { get; private set; }
 
-
-    [InputControl]
-    public Vector2Control Stick { get; private set; }
 
     // Register the device.
     static ArcadeGamepad()
@@ -104,8 +101,8 @@ public class ArcadeGamepad : InputDevice
         BlueTop = GetChildControl<ButtonControl>("BlueTop");
         BlueBottom = GetChildControl<ButtonControl>("BlueBottom");
         IsRightPlayer = GetChildControl<ButtonControl>("IsRightPlayer");
-        Stick = GetChildControl<Vector2Control>("stick");
-        base.FinishSetup();
+        stick = GetChildControl<StickControl>("stick");
+        trigger = BlueBottom;
     }
 
 
