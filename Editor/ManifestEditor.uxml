@@ -1,12 +1,17 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <uie:Toolbar>
         <ui:Label text="Manifest editor&#10;" style="-unity-font-style: bold; -unity-text-align: upper-center;" />
-        <uie:ToolbarButton text="save" display-tooltip-when-elided="true" />
-        <uie:ToolbarSpacer style="flex-grow: 3;" />
-        <uie:ToolbarToggle focusable="false" label="Auto save" style="flex-shrink: 0;" />
+        <uie:ToolbarButton text="save" display-tooltip-when-elided="true" name="SaveButton" />
+        <uie:ToolbarSpacer style="flex-grow: 1; flex-shrink: 0;" />
+        <uie:ToolbarToggle focusable="false" label="Auto save" name="AutoSaveToggle" style="flex-shrink: 1; width: 70px;" />
     </uie:Toolbar>
+    <ui:Label text="Manifest settings" display-tooltip-when-elided="true" name="manifestLabel" style="-unity-text-align: upper-center; font-size: 14px; padding-top: 10px; padding-bottom: 10px;" />
     <ui:TextField picking-mode="Ignore" label="game name" text="filler text" name="Name" />
     <ui:TextField picking-mode="Ignore" label="Description" name="Description" multiline="true" />
     <uie:ColorField label="Background color" value="RGBA(0.000, 1.000, 1.000, 1.000)" name="BackgroundColor" show-alpha="false" />
     <ui:DropdownField label="Dropdown" index="0" choices="singleplayer only,multiplayer only, both" name="PlayersNeeded" />
+    <ui:Label text="Authors" display-tooltip-when-elided="true" />
+    <ui:ListView focusable="true" reorderable="true" show-add-remove-footer="true" reorder-mode="Animated" show-border="true" virtualization-method="DynamicHeight" name="ListView" style="min-height: 50px; padding-left: 10px; padding-right: 10px;" />
+    <ui:Label text="Icon settings" display-tooltip-when-elided="true" name="manifestLabel" style="-unity-text-align: upper-center; font-size: 14px; padding-top: 10px; padding-bottom: 10px;" />
+    <uie:ObjectField label="Icon" type=" UnityEngine.Texture2D, UnityEngine.CoreModule" allow-scene-objects="false" name="IconPath" />
 </ui:UXML>

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace ArcadeLauncher.Models
 {
@@ -7,11 +8,13 @@ namespace ArcadeLauncher.Models
     {
         public string Name;
         public string Description;
-        public string[] Authors;
+        public List< string> Authors;
         public string NameExe;
         public string BackgroundColor;
 
         public int PlayersNeeded;
         [HideInInspector]public int ManifestVersion= 1;
+
+        public string IconPath;
     }
 }

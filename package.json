@@ -1,6 +1,6 @@
 {
   "name": "com.gamelab.gamelab-arcade-tools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Gamelab arcade Tools",
   "description": "Gamelab Arcade Tools is a set of attributes, tools and extensions for Unity",
   "unity": "2018.3",

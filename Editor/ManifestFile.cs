@@ -33,28 +33,40 @@ public static class ManifestFile
 
     private static void CreateNewManifest()
     {
-        current = new GameManifest
-        {
-            Name = Application.productName,
-            PlayersNeeded = 1,
-            ManifestVersion = 1,
-            Description = "replace your description here",
-            Authors = new string[] { System.Security.Principal.WindowsIdentity.GetCurrent().Name },
-            NameExe = Application.productName + ".exe",
-            BackgroundColor = ColorUtility.ToHtmlStringRGB(Color.green)
-        };
+        current = ScriptableObject.CreateInstance<GameManifest>();
+
+
+        current.Name = Application.productName;
+        current.PlayersNeeded = 1;
+        current.ManifestVersion = 1;
+        current.Description = "replace your description here";
+        current.Authors = new();
+        current.NameExe = Application.productName + ".exe";
+        current.BackgroundColor = ColorUtility.ToHtmlStringRGB(Color.green);
+        current.IconPath = "Packages/com.gamelab.gamelab-arcade-tools/Editor/Default_icon.png";
     }
 
     public static void Save()
     {
         FileStream stream;
         if (!File.Exists(FileLocation))
-            stream = File.Create(FileLocation);
-        else
-            stream = File.OpenWrite(FileLocation);
+            File.Delete(FileLocation);
 
+        stream = File.Create(FileLocation);
 
         byte[] info = new UTF8Encoding(true).GetBytes(JsonUtility.ToJson(current));
         stream.Write(info, 0, info.Length);
+        stream.Close();
+    }
+
+    internal static void CopyTo(string manifestPath)
+    {
+        if (File.Exists(manifestPath))
+            File.Delete(manifestPath);
+
+        byte[] info = new UTF8Encoding(true).GetBytes(JsonUtility.ToJson(current));
+        var stream = File.Create(manifestPath);
+        stream.Write(info, 0, info.Length);
+        stream.Close();
     }
 }
