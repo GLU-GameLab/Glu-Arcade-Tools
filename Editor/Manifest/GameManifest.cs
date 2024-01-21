@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace ArcadeLauncher.Models
 {
-    [CreateAssetMenu(fileName = "game manifest", menuName ="Arcade/create manifest")]
-    public class GameManifest : ScriptableObject
+    public class GameManifest
     {
         public string Name;
         public string Description;

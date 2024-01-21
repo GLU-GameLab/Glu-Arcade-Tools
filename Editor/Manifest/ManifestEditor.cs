@@ -15,9 +15,23 @@ public class ManifestEditor : EditorWindow
         wnd.saveChangesMessage = "The Manifest editor has unsaved changes. Would you like to save?";
     }
 
+
+
     private GameManifest manifest => ManifestFile.current;
 
-    private bool autoSave;
+    private const string AutosaveKey = "GamelabManifestEditorAutoSave";
+
+    private bool autoSave
+    {
+        get
+        {
+            return EditorPrefs.GetBool(AutosaveKey, false);
+        }
+        set
+        {
+            EditorPrefs.SetBool(AutosaveKey, value);
+        }
+    }
 
     public void CreateGUI()
     {
@@ -25,7 +39,7 @@ public class ManifestEditor : EditorWindow
         VisualElement root = rootVisualElement;
 
         // VisualElements objects can contain other VisualElement following a tree hierarchy
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.gamelab.gamelab-arcade-tools/Editor/ManifestEditor.uxml");
+        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.gamelab.gamelab-arcade-tools/Editor/Manifest/ManifestEditor.uxml");
         VisualElement labelFromUXML = visualTree.Instantiate();
         root.Add(labelFromUXML);
 
@@ -33,20 +47,40 @@ public class ManifestEditor : EditorWindow
         var savebutton = root.Q<ToolbarButton>("SaveButton");
         savebutton.clicked += Save;
 
+
+
         // autosave button
         var AutoSaveToggle = root.Q<ToolbarToggle>("AutoSaveToggle");
+        AutoSaveToggle.value = autoSave;
         AutoSaveToggle.RegisterValueChangedCallback((x) =>
         {
             // disable the save button when autosave is enabled
             savebutton.style.display = (x.newValue) ? DisplayStyle.None : DisplayStyle.Flex;
             autoSave = x.newValue;
+            if (x.newValue)
+            {
+                Save();
+            }
         });
 
+        try
+        {
+            StartBinding();
+        }
+        catch
+        {
+            ManifestFile.CreateNewManifest();
+            StartBinding();
+        }
 
+    }
+
+    void StartBinding()
+    {
         // binding of string
         SimpleBind<string, TextField>(nameof(manifest.Name), () => manifest.Name, (x) => manifest.Name = x.newValue);
         SimpleBind<string, TextField>(nameof(manifest.Description), () => manifest.Description, (x) => manifest.Description = x.newValue);
-        
+
         // binding of the background color
         // the color needs to be converted to comply with the manifest standard
         SimpleBind<Color, ColorField>(nameof(manifest.BackgroundColor), () => { ColorUtility.TryParseHtmlString(manifest.BackgroundColor, out var color); return color; }, (x) => manifest.BackgroundColor = ColorUtility.ToHtmlStringRGB(x.newValue));
@@ -56,7 +90,7 @@ public class ManifestEditor : EditorWindow
         SimpleBind<string, DropdownField>(nameof(manifest.PlayersNeeded), (x) => x.choices[manifest.PlayersNeeded - 1], (x) => manifest.PlayersNeeded = (x.currentTarget as DropdownField).index + 1);
 
         // binding of the icon that will be provided in the build path
-        SimpleBind<UnityEngine.Object, ObjectField>(nameof(manifest.IconPath), 
+        SimpleBind<UnityEngine.Object, ObjectField>(nameof(manifest.IconPath),
             () => // getter
             {
 
@@ -64,7 +98,7 @@ public class ManifestEditor : EditorWindow
                     return AssetDatabase.LoadAssetAtPath<Texture2D>(manifest.IconPath);
                 return AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.gamelab.gamelab-arcade-tools/Editor/Default_icon.png");
 
-            }, 
+            },
             (x) => // setter
             {
                 if (x.newValue)

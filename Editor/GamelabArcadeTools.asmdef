@@ -1,7 +1,11 @@
 {
     "name": "GamelabArcadeTools.Editor",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "Unity.InputSystem.TestFramework",
+        "Unity.InputSystem",
+        "GamelabArcadeTools"
+    ],
     "includePlatforms": [
         "Editor"
     ],

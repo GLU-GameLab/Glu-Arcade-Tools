@@ -31,19 +31,19 @@ public static class ManifestFile
         }
     }
 
-    private static void CreateNewManifest()
+    public static void CreateNewManifest()
     {
-        current = ScriptableObject.CreateInstance<GameManifest>();
-
-
-        current.Name = Application.productName;
-        current.PlayersNeeded = 1;
-        current.ManifestVersion = 1;
-        current.Description = "replace your description here";
-        current.Authors = new();
-        current.NameExe = Application.productName + ".exe";
-        current.BackgroundColor = ColorUtility.ToHtmlStringRGB(Color.green);
-        current.IconPath = "Packages/com.gamelab.gamelab-arcade-tools/Editor/Default_icon.png";
+        current = new GameManifest
+        {
+            Name = Application.productName,
+            PlayersNeeded = 1,
+            ManifestVersion = 1,
+            Description = "replace your description here",
+            Authors = new(),
+            NameExe = Application.productName,
+            BackgroundColor = ColorUtility.ToHtmlStringRGB(Color.green),
+            IconPath = "Packages/com.gamelab.gamelab-arcade-tools/Editor/Default_icon.png",
+        };
     }
 
     public static void Save()
